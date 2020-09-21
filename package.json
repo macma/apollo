@@ -6,12 +6,12 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
+    "test": "mocha"
   },
   "dependencies": {
     "apollo-server": "^2.17.0",
-    "graphql": "15.3.0",
-    "graphql-tools": "6.2.3",
-    "express": "4.17.1",
-    "body-parser": "1.19.0"
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.1.3"
   }
 }
