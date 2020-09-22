@@ -39,5 +39,4 @@ const resolvers = {
 };
 
 const server = new ApolloServer({ typeDefs, resolvers, extensions });
-
 module.exports = server;
