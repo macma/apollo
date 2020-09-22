@@ -1,6 +1,7 @@
 version: 2
 orbs:
   vulnerability-checker: whitesource/vulnerability-checker@19.10.1
+
 jobs:
   build:
     docker:
@@ -8,44 +9,60 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run Tests
+          name: Setup Env
           command: |
-            npm run test
-          when: always
+            echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
+            echo 'export IMAGE_NAME=node-circleci-docker' >> $BASH_ENV 
+            npm install
       - setup_remote_docker:
-          version: 18.06.0-ce
-          when: always
+          docker_layer_caching: false 
       - run:
-          name: Install docker
-          command: |
-            apt-get update --fix-missing
-            apt-get install -y apt-transport-https ca-certificates software-properties-common
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-            apt-key fingerprint 0EBFCD88
-            add-apt-repository \
-              "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-              $(lsb_release -cs) \
-              stable"
-            apt-get update
-            apt-get install -y docker-ce
-            docker --version
-          when: always
+          name: Building image
+          command: docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
       - run:
-          name: Build and push Docker image
+          name: Push image
           command: |
-            docker build -t cph1c06/$IMAGE_NAME:$TAG .
-      - run:
-          name: "Start Service and Check That it’s Running"
-          command: |
-            docker run -d --name my-app cph1c06/$IMAGE_NAME:$TAG
-            docker exec my-app curl --retry 10 --retry-connrefused http://localhost:4000
-          when: always
+            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+            docker push $DOCKER_LOGIN/$IMAGE_NAME:$TAG 
+  vulnerability-scan:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
       - run:
           command: |
             curl -LJO https://vulnerability-checker.s3.amazonaws.com/release/partner/CircleCI/wss-vulnerability-checker-201910-Top250-Top50-CircleCI.zip
             unzip wss-vulnerability-checker-201910-Top250-Top50-CircleCI.zip
-            ./vulnerability-checker.sh -d <<parameters.directory>>
+            ./vulnerability-checker.sh -d src
             mkdir -p /tmp/results
             cp VulnerabilityCheckerReport.html /tmp/results
             echo check artifacts for results
-          when: always
+      - store_artifacts:
+          path: /tmp/results
+  dynamic-code-test:
+    docker:
+      - image: circleci/node:12-buster
+    steps:
+      - checkout
+      - run:
+          name: Initialize Environment
+          command: |
+            npm install
+            mkdir -p /tmp/results
+      - run:
+          name: Run Tests
+          command: |
+            npx mocha --reporter mocha-simple-html-reporter --reporter-options output=/tmp/results/report.html
+      - store_artifacts:
+            path: /tmp/results
+
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - vulnerability-scan
+      - dynamic-code-test
+      - build:
+          requires:
+            - vulnerability-scan
+            - dynamic-code-test

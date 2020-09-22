@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server');
+const extensions = require('./logExtension');
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -37,30 +38,5 @@ const resolvers = {
   },
 };
 
-const LogPlugin = {
-  requestDidStart(requestContext) {
-    console.log('Request started! Query:\n' +
-      requestContext.request.query);
-    return {
-      parsingDidStart(requestContext) {
-        console.log('Parsing started!');
-      },
-      validationDidStart(requestContext) {
-        console.log('Validation started!');
-      },
-    }
-  },
-};
-
-const server = new ApolloServer({ 
-  typeDefs,
-  resolvers,
-  engine: {
-    debugPrintReports: true,
-  }
-  plugins: [
-    LogPlugin
-  ]
-});
-
+const server = new ApolloServer({ typeDefs, resolvers, extensions });
 module.exports = server;
