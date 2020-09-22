@@ -6,7 +6,8 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY src /usr/src/app/src
+COPY test /usr/src/app/test
 
 EXPOSE 4000
-CMD [ "node", "server.js" ]
+CMD [ "node", "app.js" ]
