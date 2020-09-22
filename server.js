@@ -37,7 +37,31 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const LogPlugin = {
+  requestDidStart(requestContext) {
+    console.log('Request started! Query:\n' +
+      requestContext.request.query);
+    return {
+      parsingDidStart(requestContext) {
+        console.log('Parsing started!');
+      },
+      validationDidStart(requestContext) {
+        console.log('Validation started!');
+      },
+    }
+  },
+};
+
+const server = new ApolloServer({ 
+  typeDefs,
+  resolvers,
+  engine: {
+    debugPrintReports: true,
+  }
+  plugins: [
+    LogPlugin
+  ]
+});
 
 // The `listen` method launches a web server.
 server.listen(4000, '0.0.0.0').then(({ url }) => {
