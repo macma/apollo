@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server');
+const extensions = require('./logExtension');
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -37,6 +38,6 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, extensions });
 
 module.exports = server;
