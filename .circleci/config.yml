@@ -51,9 +51,9 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            npx mocha --reporter mocha-simple-html-reporter --reporter-options output=/tmp/report.html
+            npx mocha --reporter mocha-simple-html-reporter --reporter-options output=/tmp/results/report.html
       - store_artifacts:
-            path: /tmp/report.html
+            path: /tmp/results
 
 workflows:
   version: 2
