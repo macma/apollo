@@ -10,4 +10,4 @@ COPY src /usr/src/app/src
 COPY test /usr/src/app/test
 
 EXPOSE 4000
-CMD [ "node", "app.js" ]
+CMD [ "node", "src/app.js" ]
