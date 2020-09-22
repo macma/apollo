@@ -39,12 +39,29 @@ jobs:
             echo check artifacts for results
       - store_artifacts:
           path: /tmp/results
+  dynamic-code-test:
+    docker:
+      - image: circleci/node:12-buster
+    steps:
+      - checkout
+      - run:
+          name: Initialize Environment
+          command: |
+            npm install
+      - run:
+          name: Run Tests
+          command: |
+            npx mocha --reporter mocha-simple-html-reporter --reporter-options output=/tmp/report.html
+      - store_artifacts:
+            path: /tmp/report.html
 
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
       - vulnerability-scan
+      - dynamic-code-test
       - build:
           requires:
             - vulnerability-scan
+            - dynamic-code-test
