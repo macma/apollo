@@ -13,7 +13,6 @@ jobs:
           command: |
             echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
             echo 'export IMAGE_NAME=node-circleci-docker' >> $BASH_ENV 
-            echo 'export DOCKER_LOGIN=macryant' >> $BASH_ENV 
             npm install
       - setup_remote_docker:
           docker_layer_caching: false 
