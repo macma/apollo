@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            ssh root@117.18.98.200 -p 2222 -vvv 'touch aaa.txt'
+            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 'touch aaa.txt'
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
