@@ -12,11 +12,11 @@ jobs:
           fingerprints:
             - "0f:8e:93:2e:48:c0:0f:09:e1:e6:e0:1a:20:37:2a:a1"
             - "18:1a:0b:2c:b1:5e:9b:3c:2e:19:64:3b:05:58:ba:3b"
-      # - run:
-      #     name: Setup Env
-      #     command: |
-      #       echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
-      #       echo 'export IMAGE_NAME=node-circleci-docker' >> $BASH_ENV 
+      - run:
+          name: Setup Env
+          command: |
+            echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
+            echo 'export IMAGE_NAME=node-circleci-docker' >> $BASH_ENV 
       #       npm install
       # - setup_remote_docker:
       #     docker_layer_caching: false 
@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            ssh -o StrictHostKeyChecking=no -i ssh.key ubuntu@18.166.73.123 'sudo kubectl delete pod apollo && sudo kubectl delete service apollo && sudo kubectl run apollo --image=macryant/node-circleci-docker:0.1.18 --port=4000 --expose && sudo kubectl port-forward --address 0.0.0.0 apollo 4000:4000'
+            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 'echo $DOCKER_LOGIN/$IMAGE_NAME:$TAG >> bce.txt'
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
