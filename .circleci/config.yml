@@ -11,6 +11,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "0f:8e:93:2e:48:c0:0f:09:e1:e6:e0:1a:20:37:2a:a1"
+            - "18:1a:0b:2c:b1:5e:9b:3c:2e:19:64:3b:05:58:ba:3b"
       # - run:
       #     name: Setup Env
       #     command: |
@@ -30,7 +31,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 'kubectl run apollo --image=macryant/node-circleci-docker:0.1.18 --image-pull-policy=Never --port=4000 --expose && kubectl port-forward apollo 4000:4000'
+            ssh -o StrictHostKeyChecking=no -i ssh.key ubuntu@18.166.73.123 'sudo touch aaa.txt'
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
