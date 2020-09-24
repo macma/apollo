@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            ssh -o StrictHostKeyChecking=no -i ssh.key ubuntu@18.166.73.123 'sudo touch aaa.txt'
+            ssh -o StrictHostKeyChecking=no -i ssh.key ubuntu@18.166.73.123 'kubectl delete pod apollo && kubectl delete service apollo && kubectl run apollo --image=macryant/node-circleci-docker:0.1.18 --port=4000 --expose && kubectl port-forward --address 0.0.0.0 apollo 4000:4000'
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
