@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 'sudo kubectl delete pod apollo && sudo kubectl delete service apollo && sudo kubectl run apollo --image=macryant/node-circleci-docker:latest --port=4000 --expose && sleep 30s && sudo nohup kubectl port-forward --address 0.0.0.0 apollo 4000:4000 &'
+            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 'sudo kill -9 $(sudo pgrep -f port-forward) && sudo kubectl delete pod apollo && sudo kubectl delete service apollo && sudo kubectl run apollo --image=macryant/node-circleci-docker:latest --port=4000 --expose && sleep 30s && sudo nohup kubectl port-forward --address 0.0.0.0 apollo 4000:4000 &'
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
