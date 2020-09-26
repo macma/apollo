@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            ssh -o StrictHostKeyChecking=no -i ssh.key ubuntu@18.166.73.123 -p 2222 "for i in $( sudo ps ax | grep port-forward | grep -v 'grep' | awk '{print $1}' ); do sudo kill -9 ${i}; done"
+            ssh -o StrictHostKeyChecking=no -i ssh.key ubuntu@18.166.73.123 -p 22 "for i in $( sudo ps ax | grep port-forward | grep -v 'grep' | awk '{print $1}' ); do sudo kill -9 ${i}; done"
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
