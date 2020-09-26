@@ -89,6 +89,6 @@ workflows:
           # requires:
           #   - vulnerability-scan
           #   - dynamic-code-test
-      - deployment
+      - deployment:
           requires:
             - build
