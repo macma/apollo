@@ -12,7 +12,7 @@ jobs:
       - kube-orb/install-kubectl
       - kube-orb/create-or-update-resource:
           get-rollout-status: true
-          resource-file-path: scripts/kubeconfig
+          resource-file-path: ./scripts/kubeconfig
           resource-name: macryant/node-circleci-docker:latest
           show-kubectl-command: true
   build:
@@ -85,10 +85,11 @@ workflows:
     jobs:
       # - vulnerability-scan
       # - dynamic-code-test
-      - build
-          # requires:
-          #   - vulnerability-scan
-          #   - dynamic-code-test
-      - deployment:
-          requires:
-            - build
+      # - build
+      #     # requires:
+      #     #   - vulnerability-scan
+      #     #   - dynamic-code-test
+      # - deployment:
+      #     requires:
+      #       - build
+      - deployment
