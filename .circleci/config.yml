@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 "killall kubectl"
+            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 "if pgrep kubectl; then killall kubectl; fi"
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
