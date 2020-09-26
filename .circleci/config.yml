@@ -36,18 +36,17 @@ jobs:
       #     name: Deploy to Kubernetes
       #     command: |
       #       ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 "if pgrep kubectl; then killall kubectl; fi && sudo kubectl delete pod apollo --ignore-not-found=true && sudo kubectl delete service apollo --ignore-not-found=true && sudo kubectl run apollo --image=macryant/node-circleci-docker:latest --port=4000 --expose && sleep 30s && kubectl port-forward --address 0.0.0.0 apollo 4000:4000 &"
-      - run:
-          name: Deploy to Kubernetes
-          docker:
-            - image: 'cimg/base:stable'
-          steps: 
-            - checkout
-            - kube-orb/install-kubectl
-            - kube-orb/create-or-update-resource:
-                get-rollout-status: true
-                resource-file-path: scripts/kubeconfig
-                resource-name: macryant/node-circleci-docker:latest
-                show-kubectl-command: true
+  deployment:
+    docker:
+      - image: 'cimg/base:stable'
+    steps: 
+      - checkout
+      - kube-orb/install-kubectl
+      - kube-orb/create-or-update-resource:
+          get-rollout-status: true
+          resource-file-path: scripts/kubeconfig
+          resource-name: macryant/node-circleci-docker:latest
+          show-kubectl-command: true
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -90,3 +89,6 @@ workflows:
           # requires:
           #   - vulnerability-scan
           #   - dynamic-code-test
+      - deployment
+          requires:
+            - build
