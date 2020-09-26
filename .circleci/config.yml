@@ -9,8 +9,8 @@ jobs:
       - image: 'cimg/base:stable'
     steps: 
       - checkout
-      - kube-orb/install-kubectl
-      - kube-orb/create-or-update-resource:
+      - kubernetes/install-kubectl
+      - kubernetes/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: scripts/kubeconfig
           resource-name: macryant/node-circleci-docker:latest
