@@ -1,7 +1,7 @@
 version: 2.0
 orbs:
   vulnerability-checker: whitesource/vulnerability-checker@19.10.1
-  kubernetes: circleci/kubernetes@0.11.1
+  kube-orb: circleci/kubernetes@0.11.1
 
 jobs:
   deployment:
@@ -9,8 +9,8 @@ jobs:
       - image: 'cimg/base:stable'
     steps: 
       - checkout
-      - kubernetes/install-kubectl
-      - kubernetes/create-or-update-resource:
+      - kube-orb/install-kubectl
+      - kube-orb/create-or-update-resource:
           get-rollout-status: true
           resource-file-path: scripts/kubeconfig
           resource-name: macryant/node-circleci-docker:latest
