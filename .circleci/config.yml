@@ -1,6 +1,7 @@
-version: 2
+version: 2.1
 orbs:
   vulnerability-checker: whitesource/vulnerability-checker@19.10.1
+  kubernetes: circleci/kubernetes@0.11.1
 
 jobs:
   build:
@@ -31,10 +32,22 @@ jobs:
       #       echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
       #       docker push $DOCKER_LOGIN/$IMAGE_NAME:$TAG 
       #       docker push $DOCKER_LOGIN/$IMAGE_NAME:latest
+      # - run:
+      #     name: Deploy to Kubernetes
+      #     command: |
+      #       ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 "if pgrep kubectl; then killall kubectl; fi && sudo kubectl delete pod apollo --ignore-not-found=true && sudo kubectl delete service apollo --ignore-not-found=true && sudo kubectl run apollo --image=macryant/node-circleci-docker:latest --port=4000 --expose && sleep 30s && kubectl port-forward --address 0.0.0.0 apollo 4000:4000 &"
       - run:
           name: Deploy to Kubernetes
-          command: |
-            ssh -o StrictHostKeyChecking=no -i ssh.key root@117.18.98.200 -p 2222 "if pgrep kubectl; then killall kubectl; fi && sudo kubectl delete pod apollo --ignore-not-found=true && sudo kubectl delete service apollo --ignore-not-found=true && sudo kubectl run apollo --image=macryant/node-circleci-docker:latest --port=4000 --expose && sleep 30s && kubectl port-forward --address 0.0.0.0 apollo 4000:4000 &"
+          docker:
+            - image: 'cimg/base:stable'
+          steps: 
+            - checkout
+            - kube-orb/install-kubectl
+            - kube-orb/create-or-update-resource:
+                get-rollout-status: true
+                resource-file-path: scripts/kubeconfig
+                resource-name: macryant/node-circleci-docker:latest
+                show-kubectl-command: true
   vulnerability-scan:
     docker:
       - image: circleci/openjdk:8-jdk
