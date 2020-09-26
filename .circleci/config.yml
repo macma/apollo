@@ -1,6 +1,6 @@
-version: 2.0
+version: 2.1
 orbs:
-  vulnerability-checker: whitesource/vulnerability-checker@19.10.1
+  # vulnerability-checker: whitesource/vulnerability-checker@19.10.1
   kube-orb: circleci/kubernetes@0.11.1
 
 jobs:
