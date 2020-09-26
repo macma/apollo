@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.0
 orbs:
   vulnerability-checker: whitesource/vulnerability-checker@19.10.1
   kubernetes: circleci/kubernetes@0.11.1
